@@ -17,7 +17,7 @@ export default function TodoItem({item, completedHandler, deleteHandler, editHan
             </View>
             
             <View style={styles.taskButtons}>
-                <TouchableOpacity style={styles.btn} onPress={()=>editHandler(item)}>
+                <TouchableOpacity onPress={()=>editHandler(item)}>
                     <MaterialIcons name="edit" size={24} color="green"/>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btn} onPress={()=>deleteHandler(item.key)}>

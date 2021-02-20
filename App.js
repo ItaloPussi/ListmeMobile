@@ -45,7 +45,7 @@ export default function App() {
     setEdit(item)
   }
 
-  const submitHandler = (text, setText) => {
+  const submitHandler = (text, setText, selectedType) => {
     if(edit !== false){
       setTodos((prevTodos)=> {
         return prevTodos.map(todo => {
@@ -56,7 +56,6 @@ export default function App() {
               ...todo,
               text: text,
               completed: false,
-              type: 1,
             }
           }
           
@@ -68,7 +67,8 @@ export default function App() {
           ...prevTodos,
           {
             text,
-            key: Math.random().toString()
+            key: Math.random().toString(),
+            type: selectedType,
           }
   
         ]
