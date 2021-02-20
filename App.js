@@ -5,40 +5,90 @@ import Header from './components/Header';
 import TodoItem from './components/TodoItem';
 
 export default function App() {
+
   const [todos, setTodos] = useState([
-    {text: "Buy coffee", key: "1"},
-    {text: "Create an app", key:"2"},
-    {text: "Play on the switch", key: "3"}
+    {text: "Task 1", completed: false, key: "1", type:1},
+    {text: "Task 2", completed: false, key:"2", type:2},
+    {text: "Task 3", completed: false, key: "3", type:3},
+    {text: "Task 4", completed: false, key: "4", type:4},
+    {text: "Task 5", completed: false, key: "5", type:5},
+    {text: "Task 6", completed: false, key: "6", type:6},
+    {text: "Task 7", completed: false, key: "7", type:7},
+    {text: "Task 8", completed: false, key: "8", type:8},
+    {text: "Task 9", completed: false, key: "9", type:9},
   ])
 
-  const pressHandler = (key) => {
+  const [edit, setEdit] = useState(false)
+
+  const completedHandler = (key) => {
     setTodos((prevTodos) => {
-      return prevTodos.filter(todo => todo.key != key)
-    })
-  }
-
-  const submitHandler = (text) => {
-    setTodos((prevTodos)=> {
-      return [
-        ...prevTodos,
-        {
-          text,
-          key: Math.random().toString()
+      return prevTodos.map(todo => {
+        if(todo.key != key){
+          return todo
+        }else {
+          return {
+            ...todo,
+            completed: !todo.completed
+          }
         }
-
-      ]
+      })
     })
   }
+
+  const deleteHandler = key => {
+    setTodos((prevTodos) => (
+      prevTodos.filter(todo => todo.key !== key)
+    ))
+  }
+
+  const editHandler = item => {
+    setEdit(item)
+  }
+
+  const submitHandler = (text, setText) => {
+    if(edit !== false){
+      setTodos((prevTodos)=> {
+        return prevTodos.map(todo => {
+          if(todo.key !== edit.key) {
+            return todo
+          }else {
+            return {
+              ...todo,
+              text: text,
+              completed: false,
+              type: 1,
+            }
+          }
+          
+        })
+      })
+    }else{
+      setTodos((prevTodos)=> {
+        return [
+          ...prevTodos,
+          {
+            text,
+            key: Math.random().toString()
+          }
+  
+        ]
+      })
+      setText("")
+    }
+    setEdit(false)
+  }
+
+  
   return (
     <View style={styles.container}>
       <Header />
       <View style={styles.content}>
-          <AddTodo submitHandler={submitHandler} />
+          <AddTodo submitHandler={submitHandler} edit={edit} />
           <View style={styles.list}>
             <FlatList 
               data ={todos}
               renderItem={({item})=> (
-                <TodoItem item={item} pressHandler={pressHandler} />
+                <TodoItem item={item} completedHandler={completedHandler} deleteHandler={deleteHandler} editHandler={editHandler} />
               )}
             />
           </View>
@@ -50,10 +100,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#282828',
   },
   content: {
-    padding: 40,
+    paddingVertical: 40,
     flex: 1,
   },
   list: {
