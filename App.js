@@ -45,7 +45,7 @@ export default function App() {
     setEdit(item)
   }
 
-  const submitHandler = (text, setText, selectedType) => {
+  const submitHandler = (text, setText, selectedType, selectedFrequency, displayDay) => {
     if(edit !== false){
       setTodos((prevTodos)=> {
         return prevTodos.map(todo => {
@@ -69,6 +69,9 @@ export default function App() {
             text,
             key: Math.random().toString(),
             type: selectedType,
+            frequency: selectedFrequency,
+            frequencyDate: displayDay,
+            displayDay
           }
   
         ]

@@ -1,12 +1,29 @@
 import React, {useState, useEffect} from 'react'
-import {StyleSheet, TextInput, Text, Button, View, TouchableOpacity} from 'react-native'
+import {StyleSheet, TextInput, Text, Button, View, TouchableOpacity, TouchableNativeFeedback} from 'react-native'
 import CollapsibleView from "@eliav2/react-native-collapsible-view";
 import {Picker} from '@react-native-picker/picker'
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AddTodo({submitHandler, edit}){
+
+    const zeroToLeft = value => {
+        return value < 10 ? `0${value}` : value
+    }
+    const formatedDate = value => {
+        const date = new Date(value)
+        return `${date.getFullYear()}/${zeroToLeft(date.getMonth()+1)}/${zeroToLeft(date.getDate())}`
+    }
+
     const [text, setText] = useState()
     const [expanded, setExpanded] = useState(false)
     const [selectedType, setSelectedType] = useState("1")
+    const [selectedFrequency, setSelectedFrequency] = useState("1")
+    const [displayDay, setDisplayDay] = useState(new Date())
+    const [showDatePicker, setShowDatePicker] = useState(false)
+
+    useEffect(()=>{
+        console.log(displayDay)
+    },[displayDay])
 
     useEffect(()=>{
         if(edit === false){
@@ -20,6 +37,12 @@ export default function AddTodo({submitHandler, edit}){
         setText(val)
     }
 
+    const changeDisplayDay = (e, d) => {
+        setShowDatePicker(false)
+        const date = d || displayDay
+        setDisplayDay(date)
+    }
+
     return (
         <View>
             <View style={styles.inputContainer}>
@@ -29,13 +52,28 @@ export default function AddTodo({submitHandler, edit}){
                     onChangeText={changeHandler}
                     value={text}
                 />
-                <View style={styles.expandBtn}>
-                    <TouchableOpacity onPress={()=>setExpanded(!expanded)}><Text>+</Text></TouchableOpacity>
+                <View style={styles.expandBtnContainer}>
+                    <TouchableOpacity style={styles.expandBtn} onPress={()=>setExpanded(!expanded)}><Text>+</Text></TouchableOpacity>
                 </View>
             </View>
             
 
             <CollapsibleView expanded={expanded} title="" noArrow = {true} style={expanded ? styles.noborder : styles.noborderandheight} activeOpacityFeedback={1}>
+                <View>
+                    <Text style={{fontSize: 10, color: "#333"}}>Frequency:</Text>
+                    <Picker
+                        selectedValue={selectedFrequency}
+                        onValueChange={itemValue => setSelectedFrequency(itemValue)}
+                    >
+                        <Picker.Item label="Only" value="1" />
+                        <Picker.Item label="Daily" value="2" />
+                        <Picker.Item label="Weekly" value="3" />
+                        <Picker.Item label="Monthly" value="4" />
+                        <Picker.Item label="Biweekly" value="5" />
+                        <Picker.Item label="Soon" value="6" />
+                        <Picker.Item label="Weekday" value="7" />
+                    </Picker>
+                </View>
                 <View>
                     <Text style={{fontSize: 10, color: "#333"}}>Type:</Text>
                     <Picker
@@ -53,7 +91,23 @@ export default function AddTodo({submitHandler, edit}){
                         <Picker.Item label="Others" value="9" />
                     </Picker>
                 </View>
-                <Button onPress={()=>submitHandler(text, setText, selectedType)} title={edit === false ? "add todo" : "edit"} color='#2d2d2d'/>
+                <View>
+                    <Text style={{fontSize: 10, color: "#333"}}>Display Day:</Text>
+                    <TouchableNativeFeedback onPress={()=> setShowDatePicker(true)}>
+                        <Text style={{paddingLeft: 10, marginVertical: 10}}>{formatedDate(displayDay)}</Text>
+                    </TouchableNativeFeedback>
+                    {
+                        showDatePicker &&
+                        <DateTimePicker
+                            value={displayDay}
+                            mode="date"
+                            display="default"
+                            onChange={changeDisplayDay}
+                            minimumDate={new Date()}
+                      />
+                    }
+                </View>
+                <Button onPress={()=>submitHandler(text, setText, selectedType, selectedFrequency, formatedDate(displayDay))} title={edit === false ? "add todo" : "edit"} color='#2d2d2d'/>
             </CollapsibleView>
         </View>
     )
@@ -79,7 +133,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between"
     },
-    expandBtn : {
+    expandBtnContainer : {
         justifyContent: "center",
         alignItems: "center",
         marginHorizontal: 10,
@@ -88,5 +142,11 @@ const styles = StyleSheet.create({
         marginTop: 8,
         backgroundColor: "#2d2d2d"
 
+    },
+    expandBtn: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 32,
+        height: 32,
     }
 })
