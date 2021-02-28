@@ -1,18 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {StyleSheet, TextInput, Text, Button, View, TouchableOpacity, TouchableNativeFeedback} from 'react-native'
 import CollapsibleView from "@eliav2/react-native-collapsible-view";
 import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-export default function AddTodo({submitHandler, edit}){
-
-    const zeroToLeft = value => {
-        return value < 10 ? `0${value}` : value
-    }
-    const formatedDate = value => {
-        const date = new Date(value)
-        return `${date.getFullYear()}/${zeroToLeft(date.getMonth()+1)}/${zeroToLeft(date.getDate())}`
-    }
+import { TasksContext } from '../context/TasksContext';
+import {zeroToLeft, formatedDate} from '../utils/functions'
+export default function AddTodo(){
+    const {edit, submitHandler} = useContext(TasksContext)
 
     const [text, setText] = useState()
     const [expanded, setExpanded] = useState(false)
@@ -22,14 +16,10 @@ export default function AddTodo({submitHandler, edit}){
     const [showDatePicker, setShowDatePicker] = useState(false)
 
     useEffect(()=>{
-        console.log(displayDay)
-    },[displayDay])
-
-    useEffect(()=>{
         if(edit === false){
             setText("")
         }else{
-            setText(edit.text)
+            setText(edit.value)
         }
     }, [edit])
 

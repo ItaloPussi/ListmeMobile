@@ -1,19 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View} from 'react-native'
 import { FontAwesome, MaterialIcons  } from '@expo/vector-icons'; 
+import { TasksContext } from '../context/TasksContext';
 
-export default function TodoItem({item, completedHandler, deleteHandler, editHandler}) {
+export default function TodoItem({item}) {
+    const {completedHandler, deleteHandler, editHandler} = useContext(TasksContext)
     const colorsByTypes = ["","rgba(220, 34, 29, 0.8)","rgba(0, 255, 0, 0.6)", "rgba(0, 0, 255, 0.6)", "rgba(255, 0, 255, 0.6)", "rgba(0, 255, 255, 0.6)", "rgba(255, 255, 0, 1)", "rgb(255, 123, 0)", "rgb(161, 128, 74)", "rgba(0,0, 0, 0.2)"]
-    
-    if(new Date(item.displayDay) > new Date()) return
+
+    if(new Date(item.initialDisplayDay) > new Date()) return null
+    if(new Date(item.frequencyDate) > new Date()) return null
     return (
         <View style={styles.container}>
             <View style={styles.taskText}>
                 <FontAwesome name="circle" size={8} color={colorsByTypes[item.type]}/>
 
-                <TouchableNativeFeedback onPress={()=> completedHandler(item.key)}>
+                <TouchableNativeFeedback onPress={()=> completedHandler(item.id)}>
                     <Text style={[styles.item, item.completed && styles.completed]}>
-                        {item.text}
+                        {item.value}
                     </Text>
                 </TouchableNativeFeedback>
             </View>
@@ -22,7 +25,7 @@ export default function TodoItem({item, completedHandler, deleteHandler, editHan
                 <TouchableOpacity onPress={()=>editHandler(item)}>
                     <MaterialIcons name="edit" size={24} color="green"/>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={()=>deleteHandler(item.key)}>
+                <TouchableOpacity style={styles.btn} onPress={()=>deleteHandler(item.id)}>
                     <FontAwesome name="trash-o" size={24} color="red"/>
                 </TouchableOpacity>
             </View>
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     },
     item: {
         padding: 16,
-        color: "#ccc",
+        color: "#bbb",
         flex: 1,
     },
     completed: {
