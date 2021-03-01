@@ -4,12 +4,15 @@ import { FontAwesome5  } from '@expo/vector-icons';
 import { TasksContext } from '../context/TasksContext';
 
 export default function Header(){
-    const {resetItems} = useContext(TasksContext)
+    const {resetItems, uploadItems} = useContext(TasksContext)
     return (
         <View style={styles.header}>
             <Text style={styles.title}>ListMe</Text>
             <TouchableOpacity onPress={resetItems} style={styles.syncButton}>
                 <FontAwesome5 name="sync" size={18} color="#9b9b9b" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={uploadItems} style={styles.uploadButton}>
+                <FontAwesome5 name="upload" size={18} color="#9b9b9b" />
             </TouchableOpacity>
         </View>
     )
@@ -31,5 +34,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         top: 44,
+    },
+    uploadButton: {
+        position: 'absolute',
+        left: 20,
+        top: 44,  
     }
 })

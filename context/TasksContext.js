@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import FirebaseSetup from '../Firebase/FirebaseSetup';
+import { FirebaseDownload, FirebaseUpload } from '../Firebase/FirebaseSetup';
 import { formatedDate } from "../utils/functions";
 
 export const TasksContext = createContext({})
@@ -22,10 +22,6 @@ export function TasksProvider({children, ...rest}){
 
   }
 
-  useEffect(()=>{
-    console.log(todos)
-  },[todos])
-
   const deleteHandler = id => {
     setTodos((prevTodos) => (
       prevTodos.filter(todo => todo.id !== id)
@@ -36,8 +32,12 @@ export function TasksProvider({children, ...rest}){
     setEdit(item)
   }
 
+  const uploadItems = () => {
+    FirebaseUpload(todos)
+  }
+
   useEffect(()=>{
-    FirebaseSetup(todosSetter)
+    FirebaseDownload(todosSetter)
   },[])
   
   const resetItems = () => {
@@ -90,6 +90,7 @@ export function TasksProvider({children, ...rest}){
   }
 
   const submitHandler = (value, setText, selectedType, selectedFrequency, initialDisplayDay) => {
+    if(value === "") return
     if(edit !== false){
       setTodos((prevTodos)=> {
         return prevTodos.map(todo => {
@@ -106,7 +107,6 @@ export function TasksProvider({children, ...rest}){
         })
       })
     }else{
-      console.log("chegou")
       setTodos((prevTodos)=> {
         return [
           ...prevTodos,
@@ -137,7 +137,8 @@ export function TasksProvider({children, ...rest}){
             editHandler,
             completedHandler,
             submitHandler,
-            resetItems
+            resetItems,
+            uploadItems
         }} >
             {children}
         </TasksContext.Provider>

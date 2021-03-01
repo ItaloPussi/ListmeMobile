@@ -6,7 +6,7 @@ import { todayIsWeekday } from '../utils/functions';
 
 export default function TodoItem({item}) {
     const {completedHandler, deleteHandler, editHandler} = useContext(TasksContext)
-    const colorsByTypes = ["","rgba(220, 34, 29, 0.8)","rgba(0, 255, 0, 0.6)", "rgba(0, 0, 255, 0.6)", "rgba(255, 0, 255, 0.6)", "rgba(0, 255, 255, 0.6)", "rgba(255, 255, 0, 1)", "rgb(255, 123, 0)", "rgb(161, 128, 74)", "rgba(0,0, 0, 0.2)"]
+    const colorsByTypes = ["","rgba(220, 34, 29, 0.8)","rgba(0, 255, 0, 0.6)", "rgb(0, 0, 255)", "rgba(255, 0, 255, 0.6)", "rgba(0, 255, 255, 0.6)", "rgba(255, 255, 0, 1)", "rgb(255, 123, 0)", "rgb(161, 128, 74)", "rgba(0,0, 0, 0.2)"]
 
     if(new Date(item.initialDisplayDay.replace("-","/")) > new Date()) return null
     if(new Date(item.frequencyDate) > new Date()) return null
