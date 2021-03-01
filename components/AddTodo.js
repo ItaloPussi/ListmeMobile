@@ -8,7 +8,7 @@ import {zeroToLeft, formatedDate} from '../utils/functions'
 export default function AddTodo(){
     const {edit, submitHandler} = useContext(TasksContext)
 
-    const [text, setText] = useState()
+    const [text, setText] = useState("")
     const [expanded, setExpanded] = useState(false)
     const [selectedType, setSelectedType] = useState("1")
     const [selectedFrequency, setSelectedFrequency] = useState("1")

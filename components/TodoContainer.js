@@ -10,7 +10,7 @@ export default function TodoContainer() {
                 <FlatList 
                     data ={todos}
                     renderItem={({item})=> (
-                    <TodoItem item={item}/>
+                    <TodoItem item={item} key={item.id}/>
                     )}
                 />
             </View>

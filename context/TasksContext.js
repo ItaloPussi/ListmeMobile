@@ -7,12 +7,24 @@ export const TasksContext = createContext({})
 export function TasksProvider({children, ...rest}){
   const [todos, setTodos] = useState([])
   const [edit, setEdit] = useState(false)
+  const [currentID, setCurrentID] = useState(0)
 
   const todosSetter = items => {
-    console.log(items)
-    console.log("-----------------------------------")
-    setTodos(items)
+    const cleanItems = items.map(item => {
+      return {
+        ...item,
+        initialDisplayDay: item.initialDisplayDay.replace(/-/g,"/"),
+        frequencyDate: item.frequencyDate == false ? item.frequencyDate : item.frequencyDate.replace(/-/g,"/")
+      }
+    })
+    setTodos(cleanItems)
+    setCurrentID(Math.max.apply(Math, items.map(function(item) { return item.id; })) + 1)
+
   }
+
+  useEffect(()=>{
+    console.log(todos)
+  },[todos])
 
   const deleteHandler = id => {
     setTodos((prevTodos) => (
@@ -61,7 +73,6 @@ export function TasksProvider({children, ...rest}){
       })
       newTodos = newTodos.filter(todo => todo !== false)
       setTodos(newTodos)
-      console.log(newTodos)
   }
   const completedHandler = (id) => {
     setTodos((prevTodos) => {
@@ -78,7 +89,7 @@ export function TasksProvider({children, ...rest}){
     })
   }
 
-  const submitHandler = (value, setText, selectedType, selectedFrequency, displayDay) => {
+  const submitHandler = (value, setText, selectedType, selectedFrequency, initialDisplayDay) => {
     if(edit !== false){
       setTodos((prevTodos)=> {
         return prevTodos.map(todo => {
@@ -95,21 +106,25 @@ export function TasksProvider({children, ...rest}){
         })
       })
     }else{
+      console.log("chegou")
       setTodos((prevTodos)=> {
         return [
           ...prevTodos,
           {
-            value,
-            key: Math.random().toString(),
-            type: selectedType,
+            completed: false,
+            dynamics: false,
             frequency: selectedFrequency,
-            frequencyDate: displayDay,
-            displayDay
+            frequencyDate: initialDisplayDay,
+            id: String(currentID),
+            initialDisplayDay,
+            type: selectedType,
+            value,
           }
   
         ]
       })
       setText("")
+      setCurrentID(currentID + 1)
     }
     setEdit(false)
   }
