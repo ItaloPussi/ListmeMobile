@@ -42,12 +42,16 @@ export function TasksProvider({children, ...rest}){
   
   const resetItems = () => {
       let newTodos = todos.map(todo=>{
-          if(!todo.completed || todo.frequency == "6" || todo.frequency == "7"){
+          if(!todo.completed || todo.frequency == "7"){
               return todo
           }
 
           if(todo.frequency == "1"){
               return false
+          }
+
+          if(todo.frequency == "6" && todo.dynamics.currentValue >= todo.dynamics.maxValue){
+            return false
           }
 
           const schedule = new Date(todo.frequencyDate)
@@ -64,6 +68,10 @@ export function TasksProvider({children, ...rest}){
              case "5":
                   schedule.setDate(schedule.getDate()+14)
                   break
+             case "6":
+                  schedule.setDate(schedule.getDate()+1)
+                  todo.value = todo.value.replace(todo.dynamics.currentValue, parseInt(todo.dynamics.currentValue)+1)
+                  todo.dynamics.currentValue = parseInt(todo.dynamics.currentValue)+1
           }
 
           return {
@@ -89,7 +97,7 @@ export function TasksProvider({children, ...rest}){
     })
   }
 
-  const submitHandler = (value, setText, selectedType, selectedFrequency, initialDisplayDay) => {
+  const submitHandler = (value, setText, selectedType, selectedFrequency, initialDisplayDay, currentValue, maxValue) => {
     if(value === "") return
     if(edit !== false){
       setTodos((prevTodos)=> {
@@ -108,11 +116,19 @@ export function TasksProvider({children, ...rest}){
       })
     }else{
       setTodos((prevTodos)=> {
+        let dynamics = false
+        if (selectedFrequency == "6"){
+          dynamics = {
+            currentValue,
+            maxValue
+          }
+          value = value.replace("$", currentValue)
+        }
         return [
           ...prevTodos,
           {
             completed: false,
-            dynamics: false,
+            dynamics,
             frequency: selectedFrequency,
             frequencyDate: initialDisplayDay,
             id: String(currentID),

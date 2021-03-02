@@ -14,6 +14,8 @@ export default function AddTodo(){
     const [selectedFrequency, setSelectedFrequency] = useState("1")
     const [displayDay, setDisplayDay] = useState(new Date())
     const [showDatePicker, setShowDatePicker] = useState(false)
+    const [dynCurr, setDynCurr] = useState("")
+    const [dynMax, setDynMax] = useState("")
 
     useEffect(()=>{
         if(edit === false){
@@ -60,10 +62,33 @@ export default function AddTodo(){
                         <Picker.Item label="Weekly" value="3" />
                         <Picker.Item label="Monthly" value="4" />
                         <Picker.Item label="Biweekly" value="5" />
-                        <Picker.Item label="Soon" value="6" />
+                        <Picker.Item label="Dynamic" value="6" />
                         <Picker.Item label="Weekday" value="7" />
                     </Picker>
                 </View>
+                {selectedFrequency == "6" && 
+                    <View>
+                        <View style={styles.splited}>
+                            <Text style={{fontSize:10, color: "#333", width:"50%"}}>Current day:</Text>
+                            <Text style={{fontSize:10, color: "#333", width: "50%"}}>Max days:</Text>
+                        </View>
+                        <View style={styles.splited}>
+                            <TextInput 
+                                style={styles.input, {flex:1, paddingLeft: 10}}
+                                placeholder="1"
+                                onChangeText={(val) => setDynCurr(val)}
+                                value={dynCurr}
+                            />
+                            <TextInput 
+                                style={styles.input, {flex:1, paddingLeft: 10}}
+                                placeholder="30"
+                                onChangeText={(val) => setDynMax(val)}
+                                value={dynMax}
+                            />
+                        </View>
+                    </View>
+                    
+                }
                 <View>
                     <Text style={{fontSize: 10, color: "#333"}}>Type:</Text>
                     <Picker
@@ -97,13 +122,17 @@ export default function AddTodo(){
                       />
                     }
                 </View>
-                <Button onPress={()=>submitHandler(text, setText, selectedType, selectedFrequency, formatedDate(displayDay))} title={edit === false ? "add todo" : "edit"} color='#2d2d2d'/>
+                <Button onPress={()=>submitHandler(text, setText, selectedType, selectedFrequency, formatedDate(displayDay), dynCurr, dynMax)} title={edit === false ? "add todo" : "edit"} color='#2d2d2d'/>
             </CollapsibleView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    splited: {
+        flexDirection: "row",
+        marginBottom: 10,
+    },
     input: {
         marginLeft: 10,
         paddingHorizontal: 8,
