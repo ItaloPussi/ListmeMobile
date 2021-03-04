@@ -1,5 +1,4 @@
 import Firebase from 'firebase'
-import { useEffect, useState } from 'react/cjs/react.development';
 
 let storage;
 

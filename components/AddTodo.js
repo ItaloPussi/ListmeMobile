@@ -22,6 +22,8 @@ export default function AddTodo(){
             setText("")
         }else{
             setText(edit.value)
+            setSelectedType(edit.type)
+            setSelectedFrequency("1")
         }
     }, [edit])
 
@@ -51,21 +53,23 @@ export default function AddTodo(){
             
 
             <CollapsibleView expanded={expanded} title="" noArrow = {true} style={expanded ? styles.noborder : styles.noborderandheight} activeOpacityFeedback={1}>
-                <View>
-                    <Text style={{fontSize: 10, color: "#333"}}>Frequency:</Text>
-                    <Picker
-                        selectedValue={selectedFrequency}
-                        onValueChange={itemValue => setSelectedFrequency(itemValue)}
-                    >
-                        <Picker.Item label="Only" value="1" />
-                        <Picker.Item label="Daily" value="2" />
-                        <Picker.Item label="Weekly" value="3" />
-                        <Picker.Item label="Monthly" value="4" />
-                        <Picker.Item label="Biweekly" value="5" />
-                        <Picker.Item label="Dynamic" value="6" />
-                        <Picker.Item label="Weekday" value="7" />
-                    </Picker>
-                </View>
+                {!edit && 
+                    <View>
+                        <Text style={{fontSize: 10, color: "#333"}}>Frequency:</Text>
+                        <Picker
+                            selectedValue={selectedFrequency}
+                            onValueChange={itemValue => setSelectedFrequency(itemValue)}
+                        >
+                            <Picker.Item label="Only" value="1" />
+                            <Picker.Item label="Daily" value="2" />
+                            <Picker.Item label="Weekly" value="3" />
+                            <Picker.Item label="Monthly" value="4" />
+                            <Picker.Item label="Biweekly" value="5" />
+                            <Picker.Item label="Dynamic" value="6" />
+                            <Picker.Item label="Weekday" value="7" />
+                        </Picker>
+                    </View>
+                }
                 {selectedFrequency == "6" && 
                     <View>
                         <View style={styles.splited}>
@@ -106,22 +110,24 @@ export default function AddTodo(){
                         <Picker.Item label="Others" value="9" />
                     </Picker>
                 </View>
-                <View>
-                    <Text style={{fontSize: 10, color: "#333"}}>Display Day:</Text>
-                    <TouchableNativeFeedback onPress={()=> setShowDatePicker(true)}>
-                        <Text style={{paddingLeft: 10, marginVertical: 10}}>{formatedDate(displayDay)}</Text>
-                    </TouchableNativeFeedback>
-                    {
-                        showDatePicker &&
-                        <DateTimePicker
-                            value={displayDay}
-                            mode="date"
-                            display="default"
-                            onChange={changeDisplayDay}
-                            minimumDate={new Date()}
-                      />
-                    }
-                </View>
+                {!edit && 
+                    <View>
+                        <Text style={{fontSize: 10, color: "#333"}}>Display Day:</Text>
+                        <TouchableNativeFeedback onPress={()=> setShowDatePicker(true)}>
+                            <Text style={{paddingLeft: 10, marginVertical: 10}}>{formatedDate(displayDay)}</Text>
+                        </TouchableNativeFeedback>
+                        {
+                            showDatePicker &&
+                            <DateTimePicker
+                                value={displayDay}
+                                mode="date"
+                                display="default"
+                                onChange={changeDisplayDay}
+                                minimumDate={new Date()}
+                        />
+                        }
+                    </View>
+                }
                 <Button onPress={()=>submitHandler(text, setText, selectedType, selectedFrequency, formatedDate(displayDay), dynCurr, dynMax)} title={edit === false ? "add todo" : "edit"} color='#2d2d2d'/>
             </CollapsibleView>
         </View>

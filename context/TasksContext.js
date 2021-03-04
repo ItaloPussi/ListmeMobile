@@ -42,7 +42,7 @@ export function TasksProvider({children, ...rest}){
   
   const resetItems = () => {
       let newTodos = todos.map(todo=>{
-          if(!todo.completed || todo.frequency == "7"){
+          if(!todo.completed){
               return todo
           }
 
@@ -72,11 +72,21 @@ export function TasksProvider({children, ...rest}){
                   schedule.setDate(schedule.getDate()+1)
                   todo.value = todo.value.replace(todo.dynamics.currentValue, parseInt(todo.dynamics.currentValue)+1)
                   todo.dynamics.currentValue = parseInt(todo.dynamics.currentValue)+1
+                  break
+             case "7":
+                  while (true){
+                    schedule.setDate(schedule.getDate()+1)
+                    if(schedule.getDay() != 0 && schedule.getDay() != 6){
+                      break
+                    }
+                  }
+               
           }
 
           return {
               ...todo,
-              frequencyDate: formatedDate(schedule) 
+              completed: false,
+              frequencyDate: formatedDate(schedule)
           }
       })
       newTodos = newTodos.filter(todo => todo !== false)
@@ -108,7 +118,7 @@ export function TasksProvider({children, ...rest}){
             return {
               ...todo,
               value,
-              completed: false,
+              type: selectedType
             }
           }
           
